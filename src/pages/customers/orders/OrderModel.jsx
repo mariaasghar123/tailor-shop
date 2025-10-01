@@ -130,6 +130,34 @@ const OrderModal = ({ shop, onClose }) => {
     ))}
   </select>
 </div>
+{/* Insert here the image + measurements display for selected service */}
+  {selectedService?.types?.includes('standard') && selectedService.standardSizes && (
+    <div className="mb-6 bg-indigo-50 rounded-lg p-4 max-h-56 overflow-y-auto shadow-inner">
+      <h4 className="text-indigo-700 font-semibold mb-3">Standard Sizes Details</h4>
+      {Object.entries(selectedService.standardSizes).map(([garment, garmentData]) => (
+        <div key={garment} className="mb-4">
+          <p className="font-semibold text-indigo-900 mb-1">{garment}</p>
+          <div className="flex gap-3 flex-wrap">
+            {garmentData.sizes.filter(size => garmentData.images?.[size]).map(size => (
+              <div key={size} className="border rounded p-2 flex flex-col items-center w-20">
+                <span className="font-semibold mb-1">{size}</span>
+                <img
+                  src={garmentData.images[size]}
+                  alt={`${garment} ${size}`}
+                  className="w-16 h-16 object-cover rounded"
+                />
+                {garmentData.measurements?.[size] && (
+                  <p className="text-xs mt-1 text-center text-indigo-700 whitespace-pre-line">
+                    {garmentData.measurements[size]}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
 
 
           {/* Template or Custom Toggle */}

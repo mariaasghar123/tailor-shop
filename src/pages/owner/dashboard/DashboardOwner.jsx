@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import ShopsList from "../ownershop/LIstShops";
 import AllOrdersList from "../ownerorders/AllOrderList";
-import OwnerChat from "../chat/ChatOwner";
 import ChatList from "../chat/ChatList";
+import AddTailor from "../tailor/TailorAdd";
+import TailorList from "../tailor/TailorList";
 import { useNavigate } from "react-router-dom";
 
 const OwnerDashboardLayout = () => {
   const [activeTab, setActiveTab] = useState("shop");
   const navigate = useNavigate();
 
-  // ✅ Future me ye dynamic karo (shopId of logged-in owner)
+  // ✅ Future me ye dynamic hoga (shopId of logged-in owner)
   const currentShopId = "SHOP123";
 
   const renderContent = () => {
@@ -18,8 +19,12 @@ const OwnerDashboardLayout = () => {
         return <ShopsList />;
       case "orders":
         return <AllOrdersList />;
-      case "chatList": // ✅ ye tab ChatList show karega
+      case "chatList":
         return <ChatList shopId={currentShopId} />;
+      case "addTailor":
+        return <AddTailor />;
+      case "tailorList": // 👈 new case
+        return <TailorList />;
       default:
         return <ShopsList />;
     }
@@ -49,27 +54,36 @@ const OwnerDashboardLayout = () => {
             📦 Orders
           </button>
 
-          {/* ✅ Direct Chat page navigate karega */}
           <button
             onClick={() =>
               navigate(
                 "/owner/chat/UKG5G9Sq1jYE6PKA9iJv_1JCJEH8iUUWgoTjORQOqSUry5Nw2/message/ifjh0p9NKhauJ7NR9qwZ"
               )
             }
-            className={`block w-full text-left px-4 py-2 rounded hover:bg-indigo-600`}
+            className="block w-full text-left px-4 py-2 rounded hover:bg-indigo-600"
           >
             💬 Chat
           </button>
 
-          {/* ✅ Chat List tab */}
-          {/* <button
-            onClick={() => setActiveTab("chatList")}
+          {/* Add Tailor */}
+          <button
+            onClick={() => setActiveTab("addTailor")}
             className={`block w-full text-left px-4 py-2 rounded hover:bg-indigo-600 ${
-              activeTab === "chatList" && "bg-indigo-600"
+              activeTab === "addTailor" && "bg-indigo-600"
             }`}
           >
-            💬 Chat List
-          </button> */}
+            👔 Add Tailor
+          </button>
+
+          {/* Tailor List 👇 */}
+          <button
+            onClick={() => setActiveTab("tailorList")}
+            className={`block w-full text-left px-4 py-2 rounded hover:bg-indigo-600 ${
+              activeTab === "tailorList" && "bg-indigo-600"
+            }`}
+          >
+            📋 Tailor List
+          </button>
         </nav>
       </div>
 
