@@ -107,23 +107,25 @@ const OrderList = () => {
   if (loading) return <p className="text-center py-10 text-gray-600">Loading orders...</p>;
 
   return (
-    <div className="max-w-[100rem] mx-auto p-6">
-      <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">Orders for Shop</h2>
+    <div className="max-w-[100rem] mx-auto p-4 sm:p-6">
+      <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-gray-800">
+        Orders for Shop
+      </h2>
 
       <div className="overflow-x-auto bg-white shadow-lg rounded-xl border border-gray-200">
-        <table className="min-w-full table-auto">
+        <table className="min-w-full text-sm sm:text-base table-auto">
           <thead>
-            <tr className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white">
-              <th className="p-4 text-left">Customer Phone</th>
-              <th className="p-4 text-left">Service</th>
-              <th className="p-4 text-left">Type</th>
-              <th className="p-4 text-left">Size / Measurements</th>
-              <th className="p-4 text-left">Price</th>
-              <th className="p-4 text-left">Status</th>
-              <th className="p-4 text-left">Progress</th> {/* 🔹 new column */}
-              <th className="p-4 text-left">Tailor</th>
-              <th className="p-4 text-left">Created</th>
-              <th className="p-4 text-left">Actions</th>
+            <tr className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white text-xs sm:text-sm">
+              <th className="p-2 sm:p-4 text-left">Customer Phone</th>
+              <th className="p-2 sm:p-4 text-left">Service</th>
+              <th className="p-2 sm:p-4 text-left">Type</th>
+              <th className="p-2 sm:p-4 text-left">Size / Measurements</th>
+              <th className="p-2 sm:p-4 text-left">Price</th>
+              <th className="p-2 sm:p-4 text-left">Status</th>
+              <th className="p-2 sm:p-4 text-left">Progress</th>
+              <th className="p-2 sm:p-4 text-left">Tailor</th>
+              <th className="p-2 sm:p-4 text-left">Created</th>
+              <th className="p-2 sm:p-4 text-left">Actions</th>
             </tr>
           </thead>
 
@@ -132,21 +134,26 @@ const OrderList = () => {
               const assignedTailor = tailors.find((t) => t.id === order.tailorId);
 
               return (
-                <tr key={order.id} className="hover:bg-indigo-50 transition-colors duration-150">
-                  <td className="p-4 font-medium text-gray-700">{order.phone}</td>
-                  <td className="p-4 text-gray-600">{order.service?.name || order.serviceName}</td>
-                  <td className="p-4 capitalize text-gray-600">{order.type}</td>
+                <tr
+                  key={order.id}
+                  className="hover:bg-indigo-50 transition-colors duration-150 text-xs sm:text-sm"
+                >
+                  <td className="p-2 sm:p-4 font-medium text-gray-700 break-words">{order.phone}</td>
+                  <td className="p-2 sm:p-4 text-gray-600 truncate max-w-[120px] sm:max-w-[200px]">
+                    {order.service?.name || order.serviceName}
+                  </td>
+                  <td className="p-2 sm:p-4 capitalize text-gray-600">{order.type}</td>
 
-                  <td className="p-4">
+                  <td className="p-2 sm:p-4">
                     {order.type === 'standard' && (
-                      <span className="inline-block text-sm bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full">
+                      <span className="inline-block text-[10px] sm:text-sm bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full">
                         Size: {order.template || order.size || '—'}
                       </span>
                     )}
                     {order.type === 'custom' &&
                       order.measurements &&
                       Array.isArray(order.measurements) && (
-                        <div className="text-xs text-gray-500 space-y-0.5">
+                        <div className="text-[10px] sm:text-xs text-gray-500 space-y-0.5 max-h-20 overflow-y-auto">
                           {order.measurements.map((m, i) => (
                             <p key={i}>{m}</p>
                           ))}
@@ -154,13 +161,15 @@ const OrderList = () => {
                       )}
                   </td>
 
-                  <td className="p-4 text-gray-700 font-semibold">${order.basePrice}</td>
+                  <td className="p-2 sm:p-4 text-gray-700 font-semibold">
+                    ${order.basePrice}
+                  </td>
 
-                  <td className="p-4">
+                  <td className="p-2 sm:p-4">
                     <select
                       value={order.status || 'Pending'}
                       onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                      className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                      className="border border-gray-300 rounded-lg px-2 py-1 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
                     >
                       <option value="Pending">Pending</option>
                       <option value="In Progress">In Progress</option>
@@ -170,14 +179,14 @@ const OrderList = () => {
                   </td>
 
                   {/* 🔹 Progress Input */}
-                  <td className="p-4">
+                  <td className="p-2 sm:p-4">
                     <input
                       type="number"
                       min="0"
                       max="100"
                       value={order.progress || 0}
                       onChange={(e) => handleProgressChange(order.id, e.target.value)}
-                      className="w-20 border border-gray-300 rounded-lg px-2 py-1 text-sm text-center"
+                      className="w-16 sm:w-20 border border-gray-300 rounded-lg px-2 py-1 text-xs sm:text-sm text-center"
                     />
                     <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
                       <div
@@ -187,9 +196,9 @@ const OrderList = () => {
                     </div>
                   </td>
 
-                  <td className="p-4">
+                  <td className="p-2 sm:p-4">
                     {assignedTailor ? (
-                      <span className="inline-block text-sm bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                      <span className="inline-block text-xs sm:text-sm bg-green-100 text-green-700 px-2 py-1 rounded-full">
                         {assignedTailor.name || assignedTailor.email}
                       </span>
                     ) : (
@@ -197,22 +206,22 @@ const OrderList = () => {
                     )}
                   </td>
 
-                  <td className="p-4 text-sm text-gray-500">
+                  <td className="p-2 sm:p-4 text-[10px] sm:text-sm text-gray-500 whitespace-nowrap">
                     {order.createdAt?.toDate
                       ? order.createdAt.toDate().toLocaleString()
                       : '—'}
                   </td>
 
-                  <td className="p-4 space-x-2">
+                  <td className="p-2 sm:p-4 flex flex-col sm:flex-row gap-2">
                     <button
                       onClick={() => setSelectedOrder(order)}
-                      className="px-4 py-1 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 text-sm shadow-sm"
+                      className="px-3 py-1 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 text-xs sm:text-sm shadow-sm"
                     >
                       View
                     </button>
                     <button
                       onClick={() => handleDelete(order.id)}
-                      className="px-4 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 text-sm shadow-sm"
+                      className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 text-xs sm:text-sm shadow-sm"
                     >
                       Delete
                     </button>

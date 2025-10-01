@@ -25,6 +25,7 @@ import AllOrdersList from './pages/owner/ownerorders/AllOrderList.jsx';
 import OwnerChat from './pages/owner/chat/ChatOwner.jsx';
 import TailorDashboard from './pages/tailor/TailorDashboard.jsx';
 import TailorOrderDetail from './pages/tailor/TailorOrderDetails.jsx';
+import EditService from './pages/owner/ownershop/EditService.jsx';
 
 function AppContent() {
   const { role, loading } = useAuth();
@@ -67,6 +68,7 @@ function AppContent() {
               element={<OwnerChat />}
 
             />
+            <Route path="/owner/:id/edit" element={<EditService />} />
 
             {/* tailor side */}
             <Route path="/tailor-home" element={<TailorDashboard />} />

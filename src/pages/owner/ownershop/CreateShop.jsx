@@ -21,7 +21,7 @@ const CreateShop = () => {
       basePrice: 20,
       types: ["standard", "custom"],
       standardSizes: {
-        Shirt: { sizes: ["S", "M", "L", "XL"], images: {} }, // images keyed by size
+        Shirt: { sizes: ["S", "M", "L", "XL"], images: {} },
         Pants: { sizes: ["S", "M", "L", "XL"], images: {} },
         Coat: { sizes: ["S", "M", "L", "XL"], images: {} },
       },
@@ -30,7 +30,7 @@ const CreateShop = () => {
   ]);
   const [templates, setTemplates] = useState(["S", "M", "L", "XL"]);
 
-  // Handle adding a new service
+  // Add Service
   const addService = () => {
     setServices([
       ...services,
@@ -50,52 +50,19 @@ const CreateShop = () => {
 
   const updateServiceField = (index, field, value) => {
     const updated = [...services];
-    if (field === "basePrice") {
-      updated[index][field] = Number(value);
-    } else {
-      updated[index][field] = value;
-    }
+    updated[index][field] = field === "basePrice" ? Number(value) : value;
     setServices(updated);
   };
 
   const toggleServiceType = (index, type) => {
     const updated = [...services];
-    if (updated[index].types.includes(type)) {
-      updated[index].types = updated[index].types.filter((t) => t !== type);
-    } else {
-      updated[index].types.push(type);
-    }
+    updated[index].types = updated[index].types.includes(type)
+      ? updated[index].types.filter((t) => t !== type)
+      : [...updated[index].types, type];
     setServices(updated);
   };
 
-  // Upload image for a standard type size
-  const updateStandardImage = async (svcIndex, garment, size, file) => {
-    const updated = [...services];
-    if (!updated[svcIndex].standardSizes[garment].images) {
-      updated[svcIndex].standardSizes[garment].images = {};
-    }
-
-    try {
-      // 1. Storage path define karo
-      const storageRef = ref(
-        storage,
-        `shops/${auth.currentUser.uid}/${file.name}`
-      );
-
-      // 2. File ko upload karo
-      await uploadBytes(storageRef, file);
-
-      // 3. Download URL lo
-      const downloadURL = await getDownloadURL(storageRef);
-
-      // 4. URL ko save karo service object me
-      updated[svcIndex].standardSizes[garment].images[size] = downloadURL;
-      setServices(updated);
-    } catch (error) {
-      console.error("Image upload failed:", error);
-    }
-  };
-
+  // Custom Measurements
   const updateCustomMeasurements = (index, measurementsString) => {
     const arr = measurementsString
       .split(",")
@@ -106,9 +73,8 @@ const CreateShop = () => {
     setServices(updated);
   };
 
-  const removeService = (index) => {
+  const removeService = (index) =>
     setServices(services.filter((_, i) => i !== index));
-  };
 
   const addTemplate = () => setTemplates([...templates, ""]);
   const updateTemplate = (index, value) => {
@@ -119,7 +85,7 @@ const CreateShop = () => {
   const removeTemplate = (index) =>
     setTemplates(templates.filter((_, i) => i !== index));
 
-  // Submit handler - same as before, validation etc.
+  // Submit
   const handleCreateShop = async (e) => {
     e.preventDefault();
     if (!shopName || !description || !location) {
@@ -140,7 +106,6 @@ const CreateShop = () => {
         createdAt: serverTimestamp(),
       });
       toast.success("Shop Created Successfully!");
-      // Reset form
       setShopName("");
       setDescription("");
       setImage("");
@@ -168,34 +133,35 @@ const CreateShop = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-tr from-purple-100 via-indigo-100 to-pink-100 py-10 px-6">
-      <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl p-10 border border-indigo-200">
-        <h1 className="text-4xl font-extrabold mb-8 text-indigo-900">
+    <div className="min-h-screen bg-gradient-to-tr from-purple-100 via-indigo-100 to-pink-100 py-8 px-4 md:px-8">
+      <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-xl p-6 md:p-10 border border-indigo-200">
+        <h1 className="text-3xl md:text-4xl font-extrabold mb-8 text-indigo-900 text-center">
           Create New Shop
         </h1>
+
         <form onSubmit={handleCreateShop} className="space-y-8">
           {/* Basic Info */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <input
-              className="border border-indigo-300 focus:ring-indigo-400 focus:ring-2 rounded-lg p-3 text-indigo-900 font-semibold"
+              className="border border-indigo-300 rounded-lg p-3 focus:ring-indigo-400 focus:ring-2 w-full"
               placeholder="Shop Name*"
               value={shopName}
               onChange={(e) => setShopName(e.target.value)}
             />
             <input
-              className="border border-indigo-300 focus:ring-indigo-400 focus:ring-2 rounded-lg p-3 text-indigo-900 font-semibold"
+              className="border border-indigo-300 rounded-lg p-3 focus:ring-indigo-400 focus:ring-2 w-full"
               placeholder="Image URL"
               value={image}
               onChange={(e) => setImage(e.target.value)}
             />
             <input
-              className="border border-indigo-300 focus:ring-indigo-400 focus:ring-2 rounded-lg p-3 text-indigo-900 font-semibold"
+              className="border border-indigo-300 rounded-lg p-3 focus:ring-indigo-400 focus:ring-2 w-full"
               placeholder="Location*"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
             />
             <input
-              className="border border-indigo-300 focus:ring-indigo-400 focus:ring-2 rounded-lg p-3 text-indigo-900 font-semibold"
+              className="border border-indigo-300 rounded-lg p-3 focus:ring-indigo-400 focus:ring-2 w-full"
               placeholder="Phone"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
@@ -205,28 +171,31 @@ const CreateShop = () => {
               min={0}
               max={5}
               step={0.1}
-              className="border border-indigo-300 focus:ring-indigo-400 focus:ring-2 rounded-lg p-3 text-indigo-900 font-semibold"
+              className="border border-indigo-300 rounded-lg p-3 focus:ring-indigo-400 focus:ring-2 w-full"
               placeholder="Rating (0-5)"
               value={rating}
               onChange={(e) => setRating(e.target.value)}
             />
           </div>
+
           <textarea
             rows={4}
-            className="w-full border border-indigo-300 focus:ring-indigo-400 focus:ring-2 rounded-lg p-3 text-indigo-900 font-semibold"
+            className="w-full border border-indigo-300 rounded-lg p-3 focus:ring-indigo-400 focus:ring-2"
             placeholder="Description*"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
 
           {/* Services */}
-          <section className="border border-indigo-300 rounded-2xl p-6 bg-indigo-50 shadow-inner">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-indigo-900">Services</h2>
+          <section className="border border-indigo-300 rounded-2xl p-4 md:p-6 bg-indigo-50 shadow-inner">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+              <h2 className="text-xl md:text-2xl font-bold text-indigo-900">
+                Services
+              </h2>
               <button
                 type="button"
                 onClick={addService}
-                className="bg-indigo-700 hover:bg-indigo-900 transition text-white px-4 py-2 rounded-xl shadow-md"
+                className="bg-indigo-700 hover:bg-indigo-900 transition text-white px-4 py-2 rounded-lg shadow-md"
               >
                 + Add Service
               </button>
@@ -235,13 +204,13 @@ const CreateShop = () => {
             {services.map((service, index) => (
               <div
                 key={service.serviceID}
-                className="bg-white rounded-xl p-5 mb-8 shadow-md border border-indigo-300"
+                className="bg-white rounded-xl p-5 mb-6 shadow-md border border-indigo-300"
               >
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 mb-4">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
                   <input
                     type="text"
                     placeholder="Service Name"
-                    className="border border-indigo-300 rounded px-4 py-2 w-full md:w-1/3 focus:ring-indigo-400 focus:ring-2"
+                    className="border border-indigo-300 rounded px-4 py-2 w-full md:w-1/3"
                     value={service.name}
                     onChange={(e) =>
                       updateServiceField(index, "name", e.target.value)
@@ -251,7 +220,7 @@ const CreateShop = () => {
                   <input
                     type="number"
                     placeholder="Base Price"
-                    className="border border-indigo-300 rounded px-4 py-2 w-full md:w-1/4 focus:ring-indigo-400 focus:ring-2"
+                    className="border border-indigo-300 rounded px-4 py-2 w-full md:w-1/4"
                     value={service.basePrice}
                     onChange={(e) =>
                       updateServiceField(index, "basePrice", e.target.value)
@@ -268,84 +237,98 @@ const CreateShop = () => {
                   </button>
                 </div>
 
-                {/* Type Selector */}
-                <div className="flex gap-6 mb-4">
-                  <label className="flex items-center gap-2 cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={service.types.includes("standard")}
-                      onChange={() => toggleServiceType(index, "standard")}
-                      className="accent-indigo-600"
-                    />
-                    <span className="text-indigo-900 font-semibold">
-                      Standard
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={service.types.includes("custom")}
-                      onChange={() => toggleServiceType(index, "custom")}
-                      className="accent-indigo-600"
-                    />
-                    <span className="text-indigo-900 font-semibold">
-                      Custom
-                    </span>
-                  </label>
+                {/* Types */}
+                <div className="flex flex-wrap gap-6 mb-4">
+                  {["standard", "custom"].map((type) => (
+                    <label
+                      key={type}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={service.types.includes(type)}
+                        onChange={() => toggleServiceType(index, type)}
+                        className="accent-indigo-600"
+                      />
+                      <span className="text-indigo-900 font-semibold capitalize">
+                        {type}
+                      </span>
+                    </label>
+                  ))}
                 </div>
 
-                {/* Standard sizes with image upload */}
-                {/* Standard sizes with image URL input */}
-{service.types.includes('standard') && (
-  <div className="mb-4 bg-indigo-100 rounded-lg p-4">
-    <h3 className="font-semibold text-indigo-700 mb-3">Standard Sizes Per Garment</h3>
-    {garmentTypes.map(garment => (
-      <div key={garment} className="mb-6">
-        <h4 className="font-semibold text-indigo-800 mb-2">{garment}</h4>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {(service.standardSizes[garment]?.sizes || []).map(size => (
-  <div
-    key={size} className="bg-white border border-indigo-300 rounded p-3 flex flex-col shadow-sm mb-4"
-  >
-    <span className="font-semibold mb-2">{size}</span>
-    {/* Image URL input */}
-    <input
-      type="text"
-      placeholder="Enter Image URL"
-      className="mb-2 w-full border border-indigo-300 rounded p-2 focus:ring-indigo-400 focus:ring-2"
-      value={service.standardSizes[garment].images?.[size] || ''}
-      onChange={e => {
-        const updated = [...services];
-        updated[index].standardSizes[garment].images[size] = e.target.value;
-        setServices(updated);
-      }}
-    />
-    {/* Measurements input */}
-    <input
-      type="text"
-      placeholder="Enter Measurements (comma separated)"
-      className="w-full border border-indigo-300 rounded p-2 focus:ring-indigo-400 focus:ring-2"
-      value={service.standardSizes[garment].measurements?.[size] || ''}
-      onChange={e => {
-        const updated = [...services];
-        if(!updated[index].standardSizes[garment].measurements) {
-          updated[index].standardSizes[garment].measurements = {};
-        }
-        updated[index].standardSizes[garment].measurements[size] = e.target.value;
-        setServices(updated);
-      }}
-    />
-  </div>
-))}
+                {/* Standard Sizes */}
+                {service.types.includes("standard") && (
+                  <div className="mb-4 bg-indigo-100 rounded-lg p-4">
+                    <h3 className="font-semibold text-indigo-700 mb-3">
+                      Standard Sizes Per Garment
+                    </h3>
+                    {garmentTypes.map((garment) => (
+                      <div key={garment} className="mb-4">
+                        <h4 className="font-semibold text-indigo-800 mb-2">
+                          {garment}
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                          {(service.standardSizes[garment]?.sizes || []).map(
+                            (size) => (
+                              <div
+                                key={size}
+                                className="bg-white border border-indigo-300 rounded p-3 flex flex-col shadow-sm"
+                              >
+                                <span className="font-semibold mb-2">
+                                  {size}
+                                </span>
+                                <input
+                                  type="text"
+                                  placeholder="Enter Image URL"
+                                  className="mb-2 w-full border border-indigo-300 rounded p-2"
+                                  value={
+                                    service.standardSizes[garment].images?.[
+                                      size
+                                    ] || ""
+                                  }
+                                  onChange={(e) => {
+                                    const updated = [...services];
+                                    updated[index].standardSizes[garment].images[
+                                      size
+                                    ] = e.target.value;
+                                    setServices(updated);
+                                  }}
+                                />
+                                <input
+                                  type="text"
+                                  placeholder="Enter Measurements"
+                                  className="w-full border border-indigo-300 rounded p-2"
+                                  value={
+                                    service.standardSizes[garment]
+                                      .measurements?.[size] || ""
+                                  }
+                                  onChange={(e) => {
+                                    const updated = [...services];
+                                    if (
+                                      !updated[index].standardSizes[garment]
+                                        .measurements
+                                    ) {
+                                      updated[index].standardSizes[
+                                        garment
+                                      ].measurements = {};
+                                    }
+                                    updated[index].standardSizes[
+                                      garment
+                                    ].measurements[size] = e.target.value;
+                                    setServices(updated);
+                                  }}
+                                />
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
-        </div>
-      </div>
-    ))}
-  </div>
-)}
-
-
-                {/* Custom measurements input */}
+                {/* Custom */}
                 {service.types.includes("custom") && (
                   <div>
                     <label className="block font-semibold mb-2 text-indigo-700">
@@ -354,7 +337,7 @@ const CreateShop = () => {
                     <input
                       type="text"
                       placeholder="e.g chest, waist, hips, length"
-                      className="w-full border border-indigo-300 rounded p-3 focus:ring-indigo-400 focus:ring-2"
+                      className="w-full border border-indigo-300 rounded p-3"
                       value={service.customMeasurements.join(", ")}
                       onChange={(e) =>
                         updateCustomMeasurements(index, e.target.value)
@@ -366,38 +349,42 @@ const CreateShop = () => {
             ))}
           </section>
 
-          {/* Templates Section */}
-          <section className="border border-indigo-300 rounded-2xl p-6 bg-indigo-50 shadow-inner">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-indigo-900">Templates</h2>
+          {/* Templates */}
+          <section className="border border-indigo-300 rounded-2xl p-4 md:p-6 bg-indigo-50 shadow-inner">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+              <h2 className="text-xl md:text-2xl font-bold text-indigo-900">
+                Templates
+              </h2>
               <button
                 type="button"
                 onClick={addTemplate}
-                className="bg-indigo-700 hover:bg-indigo-900 transition text-white px-4 py-2 rounded-xl shadow-md"
+                className="bg-indigo-700 hover:bg-indigo-900 transition text-white px-4 py-2 rounded-lg shadow-md"
               >
                 + Add Template
               </button>
             </div>
-            {templates.map((tmp, idx) => (
-              <div
-                key={idx}
-                className="flex items-center justify-between gap-4 mb-3 bg-white rounded-lg p-3 border border-indigo-300"
-              >
-                <input
-                  className="border border-indigo-300 rounded px-4 py-2 w-full focus:ring-indigo-400 focus:ring-2"
-                  placeholder="Template (e.g. S)"
-                  value={tmp}
-                  onChange={(e) => updateTemplate(idx, e.target.value)}
-                />
-                <button
-                  type="button"
-                  onClick={() => removeTemplate(idx)}
-                  className="bg-red-600 hover:bg-red-800 text-white px-4 py-1 rounded"
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {templates.map((tmp, idx) => (
+                <div
+                  key={idx}
+                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white rounded-lg p-3 border border-indigo-300"
                 >
-                  Remove
-                </button>
-              </div>
-            ))}
+                  <input
+                    className="border border-indigo-300 rounded px-4 py-2 w-full"
+                    placeholder="Template (e.g. S)"
+                    value={tmp}
+                    onChange={(e) => updateTemplate(idx, e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeTemplate(idx)}
+                    className="bg-red-600 hover:bg-red-800 text-white px-4 py-1 rounded w-full sm:w-auto"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
           </section>
 
           <button

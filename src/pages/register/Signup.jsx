@@ -16,19 +16,17 @@ const Signup = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      // 1. Firebase Auth create user
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // 2. Firestore me role save karo
-      await setDoc(doc(db, "users", user.uid), {
-        email: email,
-        role: role,
+      await setDoc(doc(db, 'users', user.uid), {
+        email,
+        role,
         createdAt: new Date()
       });
 
       toast.success('Signup successful! Please login.');
-      setTimeout(() => navigate('/login'), 2000); // 2s delay
+      setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
       console.error(err);
       toast.error(err.message);
@@ -39,7 +37,7 @@ const Signup = () => {
 
   return (
     <div
-      className="flex justify-center items-center min-h-screen bg-gray-100 relative"
+      className="flex justify-center items-center min-h-screen bg-gray-100"
       style={{
         backgroundImage: 'url(/media/bg1.jpg)',
         backgroundSize: 'cover',
@@ -50,14 +48,16 @@ const Signup = () => {
       <div className="absolute inset-0 bg-black/50"></div>
 
       {/* signup card */}
-      <div className="relative z-10 bg-white shadow-lg p-8 rounded-xl w-full max-w-md">
-        <h2 className="text-3xl font-bold mb-6 text-center text-indigo-600">Create Account</h2>
+      <div className="relative z-10 bg-white shadow-lg p-6 sm:p-8 rounded-xl w-full max-w-md mx-4 sm:mx-0">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-indigo-600">
+          Create Account
+        </h2>
 
         <form onSubmit={handleSignup} className="space-y-4">
           <input
             type="email"
             placeholder="Email"
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm sm:text-base"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -66,14 +66,14 @@ const Signup = () => {
           <input
             type="password"
             placeholder="Password"
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm sm:text-base"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
 
           <select
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm sm:text-base"
             value={role}
             onChange={(e) => setRole(e.target.value)}
           >
@@ -85,14 +85,14 @@ const Signup = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 rounded-lg text-white font-semibold transition 
+            className={`w-full py-3 rounded-lg text-white font-semibold transition
               ${loading ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'}`}
           >
             {loading ? 'Signing Up...' : 'Sign Up'}
           </button>
         </form>
 
-        <p className="text-center text-gray-600 mt-4">
+        <p className="text-center text-gray-600 mt-4 text-sm sm:text-base">
           Already have an account?{' '}
           <span
             onClick={() => navigate('/login')}

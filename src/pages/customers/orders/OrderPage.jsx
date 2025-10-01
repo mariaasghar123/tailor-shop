@@ -27,23 +27,23 @@ const MyOrders = () => {
       <div className="max-w-6xl mx-auto px-4">
         <h1 className="text-3xl font-bold mb-6">My Orders</h1>
 
-        <div className="bg-white shadow-md rounded-md overflow-hidden">
-          <table className="min-w-full">
+        {/* Responsive wrapper for horizontal scroll */}
+        <div className="bg-white shadow-md rounded-md overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-indigo-600 text-white">
               <tr>
-                <th className="py-3 px-4 text-left">Shop</th>
-                <th className="py-3 px-4 text-left">Size</th>
-                <th className="py-3 px-4 text-left">Phone</th>
-                <th className="py-3 px-4 text-left">Status</th>
-                <th className="py-3 px-4 text-left">Progress</th>
-                <th className="py-3 px-4 text-left">Date</th>
-                <th className="py-3 px-4 text-left">Action</th>
+                <th className="py-3 px-4 text-left whitespace-nowrap">Shop</th>
+                <th className="py-3 px-4 text-left whitespace-nowrap">Size</th>
+                <th className="py-3 px-4 text-left whitespace-nowrap">Phone</th>
+                <th className="py-3 px-4 text-left whitespace-nowrap">Status</th>
+                <th className="py-3 px-4 text-left whitespace-nowrap">Progress</th>
+                <th className="py-3 px-4 text-left whitespace-nowrap">Date</th>
+                <th className="py-3 px-4 text-left whitespace-nowrap">Action</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-gray-200">
               {orders.length > 0 ? (
                 orders.map((order) => {
-                  // safe fields
                   const statusText =
                     typeof order.status === 'object'
                       ? order.status?.status
@@ -55,11 +55,10 @@ const MyOrders = () => {
 
                   return (
                     <tr key={order.id} className="border-b">
-                      <td className="py-3 px-4">{order.shopName || '-'}</td>
-                      <td className="py-3 px-4">{order.template || '-'}</td>
-                      <td className="py-3 px-4">{order.phone || '-'}</td>
-
-                      <td className="py-3 px-4">
+                      <td className="py-3 px-4 whitespace-nowrap">{order.shopName || '-'}</td>
+                      <td className="py-3 px-4 whitespace-nowrap">{order.template || '-'}</td>
+                      <td className="py-3 px-4 whitespace-nowrap">{order.phone || '-'}</td>
+                      <td className="py-3 px-4 whitespace-nowrap">
                         <span
                           className={`px-2 py-1 rounded text-sm ${
                             statusText === 'Completed'
@@ -70,26 +69,21 @@ const MyOrders = () => {
                           {statusText || 'N/A'}
                         </span>
                       </td>
-
-                      <td className="py-3 px-4">
+                      <td className="py-3 px-4 whitespace-nowrap">
                         <div className="w-full bg-gray-200 rounded-full h-2.5">
                           <div
                             className="bg-indigo-600 h-2.5 rounded-full"
                             style={{ width: `${progressValue || 0}%` }}
                           />
                         </div>
-                        <span className="text-xs text-gray-600">
-                          {progressValue || 0}%
-                        </span>
+                        <span className="text-xs text-gray-600">{progressValue || 0}%</span>
                       </td>
-
-                      <td className="py-3 px-4">
+                      <td className="py-3 px-4 whitespace-nowrap">
                         {order.createdAt?.toDate
                           ? order.createdAt.toDate().toLocaleDateString()
                           : ''}
                       </td>
-
-                      <td className="py-3 px-4">
+                      <td className="py-3 px-4 whitespace-nowrap">
                         <Link
                           to={`/my-orders/${order.id}`}
                           className="text-indigo-600 hover:underline"
